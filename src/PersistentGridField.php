@@ -161,7 +161,8 @@ class PersistentGridField extends GridField
                 $actionName = $stateChange['actionName'];
                 if ($actionName === 'ResetState') {
                     $session->set($stateHash, null);
-                    $this->state = new GridState($this);
+//                    $this->state = new GridState($this);
+                    $this->getState();
                 }
             }
         }
@@ -204,7 +205,8 @@ class PersistentGridField extends GridField
         $stateHash = $this->getStateHash();
 
         if ($previousState = Controller::curr()->getRequest()->getSession()->get($stateHash)) {
-            $this->state->setValue($previousState);
+            $state = $this->getState(false);
+            $state->setValue($previousState);
         }
 
         return parent::FieldHolder($properties);
