@@ -162,7 +162,8 @@ class PersistentGridField extends GridField
                 if ($actionName === 'ResetState') {
                     $session->set($stateHash, null);
 //                    $this->state = new GridState($this);
-                    $this->getState();
+                    $gridData = $this->getState(true);
+                    $gridData->__unset('GridFieldSortableHeader');
                 }
             }
         }
