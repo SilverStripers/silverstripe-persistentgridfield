@@ -11,9 +11,11 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridField_StateProvider;
 use SilverStripe\Forms\GridField\GridFieldButtonRow;
 use SilverStripe\Forms\GridField\GridFieldConfig;
 use SilverStripe\Forms\GridField\GridState;
+use SilverStripe\Forms\GridField\GridState_Data;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\View\HTML;
@@ -161,9 +163,16 @@ class PersistentGridField extends GridField
                 $actionName = $stateChange['actionName'];
                 if ($actionName === 'ResetState') {
                     $session->set($stateHash, null);
-//                    $this->state = new GridState($this);
-                    $gridData = $this->getState(true);
-                    $gridData->__unset('GridFieldSortableHeader');
+
+                    $this->state = new GridState($this);
+                    $data = new GridState_Data();
+                    foreach ($this->getComponents() as $item) {
+                        if ($item instanceof GridField_StateProvider) {
+                            $item->initDefaultState($data);
+                        }
+                    }
+
+                    $this->State = $data;
                 }
             }
         }
